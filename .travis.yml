@@ -2,3 +2,22 @@ language: cpp
 dist: bionic
 os:
 - linux
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "DnuMgOkcafbpLuNSyIthLATQtWnrvNPNrsA2kAHXGP1qmSVW4qy2MOZmoSrco+qslzkOrTAWYb4fbb8a0ZhhCxes3A/YgZ9CwM1xpY9g7lsbaVMO6VMNBwDkjuxcpZxYu9QuLsUMTQKwxDfVTVz3jb+folbfJzlo54YwjBQ4oow="
+
+before_install:
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  coverity_scan:
+    project:
+      name: "SidFaber/class"
+      description: "<Your project description here>"
+    notification_email: sid.faber@canonical.com
+    build_command_prepend: "./configure"
+    build_command: "make all"
+    branch_pattern: coverity_scan
